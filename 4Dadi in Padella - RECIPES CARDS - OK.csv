@@ -1,0 +1,61 @@
+Nome Piatto,Difficoltà,Categoria,Punti Vittoria,Combinazione Dadi
+Bruschetta,⭐,Appetizer,2,⬜=🟥
+Caprese,⭐,Appetizer,3,🟩>🟥
+Hummus,⭐,Appetizer,3,🟨<⬜
+Olive Ascolane,⭐⭐,Appetizer,4,🟥<⬜
+Edamame,⭐,Appetizer,3,🟩=🟨
+Samosa,⭐,Appetizer,3,🟥>⬜
+Spring Rolls,⭐,Appetizer,2,🟨>⬜
+Sushi (Nigiri),⭐⭐,Appetizer,4,⬜>🟩
+Guacamole,⭐⭐,Appetizer,4,🟩>🟨
+Feta al Forno,⭐⭐,Appetizer,5,⬜>🟨
+Calamari Fritti,⭐⭐,Appetizer,5,🟨>🟥
+Crostini al Salmone,⭐⭐,Appetizer,4,⬜<🟩
+Involtini di Melanzane,⭐,Appetizer,3,🟥<🟩
+Arancino,⭐⭐,Street Food,5,🟨>⬜
+Falafel,⭐⭐,Street Food,4,🟩>⬜
+Patatine Fritte,⭐,Street Food,2,🟥>🟨
+Tacos,⭐,Street Food,3,🟥<🟩
+Empanadas,⭐⭐,Street Food,4,🟨<🟥
+Focaccia,⭐,Street Food,3,🟩<🟨
+Pizza al Taglio,⭐⭐,Street Food,4,⬜=🟩
+Kebab,⭐⭐,Street Food,4,🟥>⬜
+Hot Dog,⭐,Street Food,3,🟥=🟨
+Piadina,⭐⭐,Street Food,4,⬜=🟨
+Crepes,⭐⭐,Street Food,4,🟨>🟩
+Fish and Chips,⭐⭐,Street Food,5,⬜<🟥
+Churros,⭐⭐,Street Food,4,⬜>🟨
+Lasagne,⭐⭐⭐,Primo,7,🟩=⬜ & 🟥>🟨
+Risotto,⭐⭐⭐,Primo,8,⬜>🟩>🟥
+Paella,⭐⭐⭐,Primo,9,🟥=🟨 & ⬜>🟩
+Ramen,⭐⭐⭐,Primo,8,🟩<⬜ & ⬜=🟨
+Gnocchi,⭐⭐⭐,Primo,7,⬜>🟨 & 🟥>🟩
+Carbonara,⭐⭐⭐,Primo,8,🟨<🟥 & 🟥=⬜
+Couscous,⭐⭐⭐,Primo,6,🟩<🟨 & 🟨<⬜
+Polenta,⭐⭐⭐,Primo,6,🟥>🟨 & ⬜>🟩
+Orecchiette,⭐⭐⭐,Primo,7,🟩>🟨 & ⬜>🟥
+Spaghetti alle Vongole,⭐⭐⭐,Primo,9,⬜>🟥 & 🟩=🟨
+Ossobuco,⭐⭐⭐,Secondo,9,⬜>🟥>🟨
+Moussaka,⭐⭐⭐,Secondo,8,⬜=🟥 & 🟩<🟨
+Chili con Carne,⭐⭐⭐,Secondo,9,🟥>🟩 & 🟩>🟨
+Spezzatino,⭐⭐⭐,Secondo,8,⬜>🟨 & 🟨=🟩
+Scaloppine,⭐⭐⭐,Secondo,7,🟩=🟨 & ⬜>🟥
+Pollo al Curry,⭐⭐⭐,Secondo,7,🟨>⬜ & 🟩<🟥
+Frittura di Pesce,⭐⭐⭐,Secondo,8,⬜>🟥 & 🟨<🟩
+Saltimbocca,⭐⭐⭐,Secondo,9,🟩>🟥 & ⬜=🟨
+Arrosto,⭐⭐⭐,Secondo,8,🟥>🟨 & ⬜>🟩
+Branzino al Sale,⭐⭐⭐,Secondo,9,⬜>🟨 & 🟩>🟥
+Cassata Siciliana,⭐⭐⭐⭐,Dessert,13,⬜=🟩 & 🟥>🟨
+Sachertorte,⭐⭐⭐⭐,Dessert,12,🟨>⬜ & ⬜=🟥
+Profiteroles,⭐⭐⭐⭐,Dessert,12,⬜>🟨 & 🟥>🟩
+Macarons,⭐⭐⭐⭐,Dessert,13,🟩=🟨 & ⬜>🟥
+Crème brûlée,⭐⭐⭐⭐,Dessert,14,🟨=🟥 & ⬜>🟩
+Torta Setteveli,⭐⭐⭐⭐,Dessert,15,⬜>🟩>🟥
+Mont Blanc,⭐⭐⭐⭐,Dessert,14,🟥>🟩 & ⬜>🟨
+Panettone,⭐⭐⭐⭐,Holiday Recipe,14,⬜>🟥 & 🟩<🟨
+Pandoro,⭐⭐⭐⭐,Holiday Recipe,13,⬜=🟥 & 🟨>🟩
+Tacchino Ripieno,⭐⭐⭐⭐,Holiday Recipe,14,🟥=🟩 & ⬜>🟨
+Cotechino con Lenticchie,⭐⭐⭐⭐,Holiday Recipe,15,⬜=🟩 & 🟥>🟨
+Struffoli,⭐⭐⭐⭐,Holiday Recipe,15,🟨>🟥 & ⬜>🟩
+Lasagne al Forno,⭐⭐⭐⭐,Holiday Recipe,14,🟥<⬜ & ⬜=🟩
+Agnello al Forno,⭐⭐⭐⭐,Holiday Recipe,15,🟥>⬜>🟩

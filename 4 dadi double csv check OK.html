@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Dadi🎲 in Padella🍲</title>
+    <style>
+        :root {
+            --appetizer-color: #90EE90;
+            --street-food-color: #FFA07A;
+            --first-course-color: #FFD700;
+            --second-course-color: #DEB887;
+            --dessert-color: #4169E1;
+            --holiday-color: #DC143C;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            min-height: 100vh;
+        }
+        .welcome-screen {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .game-screen {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .market-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .player-areas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .player-area {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .recipe-card {
+            position: relative;
+            width: 180px;
+            height: 250px;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .recipe-card:hover {
+            transform: translateY(-5px);
+        }
+        .recipe-card.Appetizer { border: 3px solid var(--appetizer-color); }
+        .recipe-card.Street-Food { border: 3px solid var(--street-food-color); }
+        .recipe-card.Primo { border: 3px solid var(--first-course-color); }
+        .recipe-card.Secondo { border: 3px solid var(--second-course-color); }
+        .recipe-card.Dessert { border: 3px solid var(--dessert-color); }
+        .recipe-card.Holiday-Recipe { border: 3px solid var(--holiday-color); }
+        .dice-area {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .die {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .die.red { background-color: #FF4136; }
+        .die.white { background-color: #DDDDDD; color: #333; }
+        .die.yellow { background-color: #FFDC00; color: #333; }
+        .die.green { background-color: #2ECC40; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .completed-recipes-category {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .completed-recipes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .completed-card {
+            transform: scale(0.8);
+            opacity: 0.8;
+        }
+        .bell-button {
+            background: #ff9800;
+            font-size: 24px;
+            padding: 15px 30px;
+            margin: 20px 0;
+        }
+        .category-icon {
+            font-size: 40px;
+            margin: 14px 0;
+        }
+        .difficulty-stars {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .victory-points {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+        }
+        .dice-combination {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+        .player-score {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #4CAF50;
+        }
+        #csvFileInput, #roundCsvFileInput {
+            display: none;
+        }
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .file-upload-label:hover {
+            background: #1976D2;
+        }
+        .player-selector {
+            margin: 20px 0;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        .round-indicator {
+            text-align: center;
+            font-size: 32px; /* Aumenta la dimensione del testo */
+            font-weight: bold; /* Rendi il testo in grassetto */
+            margin: 20px 0;
+            color: #333;
+            background-color: #FFD700; /* Aggiungi uno sfondo colorato */
+            padding: 10px; /* Aggiungi padding per rendere il testo più leggibile */
+            border-radius: 10px; /* Aggiungi bordi arrotondati */
+        }
+        .round-label {
+		    background-color: white; /* Aggiungi uno sfondo bianco */
+            padding: 5px 10px; /* Aggiungi padding per creare il rettangolo */
+            border-radius: 5px; /* Aggiungi bordi arrotondati */
+            /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
+            -webkit-text-stroke: 1px black;
+        }
+        @keyframes ring {
+            0% { transform: rotate(0); }
+            1% { transform: rotate(30deg); }
+            3% { transform: rotate(-28deg); }
+            5% { transform: rotate(34deg); }
+            7% { transform: rotate(-32deg); }
+            9% { transform: rotate(30deg); }
+            11% { transform: rotate(-28deg); }
+            13% { transform: rotate(26deg); }
+            15% { transform: rotate(-24deg); }
+            17% { transform: rotate(22deg); }
+            19% { transform: rotate(-20deg); }
+            21% { transform: rotate(18deg); }
+            23% { transform: rotate(-16deg); }
+            25% { transform: rotate(14deg); }
+            27% { transform: rotate(-12deg); }
+            29% { transform: rotate(10deg); }
+            31% { transform: rotate(-8deg); }
+            33% { transform: rotate(6deg); }
+            35% { transform: rotate(-4deg); }
+            37% { transform: rotate(2deg); }
+            39% { transform: rotate(-1deg); }
+            41% { transform: rotate(1deg); }
+            43% { transform: rotate(0); }
+        }
+        .bell-button.ringing {
+            animation: ring 0.4s ease;
+        }
+        .round-card-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 20px 0;
+        }
+        .round-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 300px; /* Aumenta la larghezza della carta */
+            height: 150px; /* Aumenta l'altezza della carta */
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: opacity 0.5s;
+        }
+        .round-card-icon {
+            font-size: 48px; /* Aumenta la dimensione dell'icona */
+            margin-bottom: 20px;
+        }
+        .round-card-name {
+            font-size: 16px; /* Riduci la dimensione del testo del nome */
+            font-weight: bold;
+        }
+        .round-card-description {
+            font-size: 12px; /* Riduci la dimensione del testo della descrizione */
+            text-align: center;
+        }
+        .round-card.blurred {
+            opacity: 0.5; /* Offusca la carta */
+        }
+    </style>
+</head>
+<body>
+ <div class="welcome-screen" id="welcomeScreen">
+ <h1>4 Dadi🎲 in Padella🍲</h1>
+ <label class="file-upload-label">
+ Carica Ricette CSV
+ <input type="file" id="csvFileInput" accept=".csv">
+ </label>
+ <label class="file-upload-label">
+ Carica Carte Round CSV
+ <input type="file" id="roundCsvFileInput" accept=".csv">
+ </label>
+ <div class="player-selector">
+ <label for="playerCount">Numero di Giocatori:</label>
+ <select id="playerCount">
+ <option value="2">2 Giocatori</option>
+ <option value="3">3 Giocatori</option>
+ <option value="4">4 Giocatori</option>
+ </select>
+ <label for="roundCount">Numero di Round:</label>
+ <select id="roundCount">
+ <option value="3">3 Round</option>
+ <option value="5">5 Round</option>
+ <option value="7">7 Round</option>
+ </select>
+ </div>
+ <button id="startGameBtn" disabled>Inizia la Partita</button>
+ </div>
+ <div class="game-screen" id="gameScreen">
+ <div class="round-indicator">
+ <span class="round-label">Round: <span id="roundNumber"></span></span>
+ <div id="roundCardContainer"></div>
+ </div>
+ <div class="market-area" id="marketArea"></div>
+ <button class="bell-button" id="kitchenBell">🔔 Campanello della Cucina</button>
+ <div class="player-areas" id="playerAreas"></div>
+ </div>
+ <div class="notification" id="notification"></div>
+ <audio id="bellSound" src="bell.wav"></audio>
+ <script>
+ class Game {
+ constructor() {
+ this.recipes = [];
+ this.players = [];
+ this.market = [];
+ this.currentRound = 1;
+ this.deck = [];
+ this.playerCount = 2;
+ this.totalRounds = 3; // Valore predefinito
+ this.activePlayer = 0;
+ this.bellSound = document.getElementById('bellSound');
+ this.roundCards = [];
+ this.currentRoundCard = null;
+ this.recipesLoaded = false; // Aggiunta la variabile per il caricamento delle ricette
+ this.roundCardsLoaded = false; // Aggiunta la variabile per il caricamento delle carte round
+ this.setupEventListeners();
+ }
+ calculateBonuses(player) {
+ const categoryCounts = {
+ 'Appetizer': 0,
+ 'Street Food': 0,
+ 'Primo': 0,
+ 'Secondo': 0,
+ 'Dessert': 0,
+ 'Holiday Recipe': 0
+ };
+ player.completedRecipes.forEach(recipe => {
+ categoryCounts[recipe.category]++;
+ });
+ let bonusPoints = 0;
+ let bonusDetails = '';
+ const addBonus = (count, points, emoji) => {
+ const bonus = Math.floor(count / 3) * points;
+ if (bonus > 0) {
+ bonusPoints += bonus;
+ bonusDetails += ` +${emoji}${bonus}`;
+ }
+ };
+ addBonus(categoryCounts['Appetizer'], 5, '🥟');
+ addBonus(categoryCounts['Street Food'], 5, '🌮');
+ addBonus(categoryCounts['Primo'], 7, '🍝');
+ addBonus(categoryCounts['Secondo'], 7, '🍖');
+ addBonus(categoryCounts['Dessert'], 10, '🍰');
+ addBonus(categoryCounts['Holiday Recipe'], 10, '🎄');
+ return { bonusPoints, bonusDetails };
+ }
+ setupEventListeners() {
+ const csvInput = document.getElementById('csvFileInput');
+ const startBtn = document.getElementById('startGameBtn');
+ const roundCsvInput = document.getElementById('roundCsvFileInput');
+ csvInput.addEventListener('change', (event) => {
+ const file = event.target.files[0];
+ if (file) {
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ try {
+ this.recipes = this.parseCSV(e.target.result);
+ if (this.recipes.length > 0) {
+ this.recipesLoaded = true; // Aggiorna la variabile
+ this.showNotification('Ricette caricate con successo!');
+ this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+ } else {
+ throw new Error('Nessuna ricetta trovata nel file CSV');
+ }
+ } catch (error) {
+ this.showNotification('Errore nel caricamento del file: ' + error.message);
+ this.recipesLoaded = false; // Aggiorna la variabile
+ this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+ }
+ };
+ reader.readAsText(file);
+ }
+ });
+ roundCsvInput.addEventListener('change', (event) => {
+ const file = event.target.files[0];
+ if (file) {
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ try {
+ this.roundCards = this.parseRoundCSV(e.target.result);
+ if (this.roundCards.length > 0) {
+ this.roundCardsLoaded = true; // Aggiorna la variabile
+ this.showNotification('Carte round caricate con successo!');
+ this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+ } else {
+ throw new Error('Nessuna carta trovata nel file CSV');
+ }
+ } catch (error) {
+ this.showNotification('Errore nel caricamento del file: ' + error.message);
+ this.roundCardsLoaded = false; // Aggiorna la variabile
+ this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+ }
+ };
+ reader.readAsText(file);
+ }
+ });
+ startBtn.addEventListener('click', () => this.startGame());
+ document.getElementById('kitchenBell').addEventListener('click', () => this.handleBellRing());
+ }
+ checkFilesLoaded() {
+ const startBtn = document.getElementById('startGameBtn');
+ if (this.recipesLoaded && this.roundCardsLoaded) {
+ startBtn.disabled = false;
+ startBtn.style.backgroundColor = '#4CAF50';
+ } else {
+ startBtn.disabled = true;
+ startBtn.style.backgroundColor = '#cccccc';
+ }
+ }
+ showNotification(message, timeout = 3000, callback = null) {
+ const notification = document.getElementById('notification');
+ notification.textContent = message;
+ notification.style.display = 'block';
+ setTimeout(() => {
+ notification.style.display = 'none';
+ if (callback) callback();
+ }, timeout);
+ }
+ parseCSV(csvText) {
+ const lines = csvText.split('\n');
+ const recipes = [];
+ for (let i = 1; i < lines.length; i++) {
+ const line = lines[i].trim();
+ if (line) {
+ const [name, difficulty, category, points, combination] = line.split(',');
+ if (!name || !difficulty || !category || !points || !combination) {
+ throw new Error('Formato CSV non valido alla riga ' + i);
+ }
+ recipes.push({
+ name: name.trim(),
+ difficulty: difficulty.trim(),
+ category: category.trim(),
+ points: parseInt(points),
+ combination: combination.trim()
+ });
+ }
+ }
+ return recipes;
+ }
+ parseRoundCSV(csvText) {
+ const lines = csvText.split('\n');
+ const roundCards = [];
+ for (let i = 1; i < lines.length; i++) {
+ const line = lines[i].trim();
+ if (line) {
+ const [Nome, Icona, Descrizione] = line.split(',');
+ if (!Nome || !Icona || !Descrizione) {
+ throw new Error('Formato CSV non valido alla riga ' + i);
+ }
+ roundCards.push({
+ Nome: Nome.trim(),
+ Icona: Icona.trim(),
+ Descrizione: Descrizione.trim()
+ });
+ }
+ }
+ return roundCards;
+ }
+ startGame() {
+ this.playerCount = parseInt(document.getElementById('playerCount').value);
+ this.totalRounds = parseInt(document.getElementById('roundCount').value);
+ document.getElementById('welcomeScreen').style.display = 'none';
+ document.getElementById('gameScreen').style.display = 'block';
+ this.deck = [...this.recipes];
+ this.shuffleDeck();
+ this.initializePlayers();
+ this.setupMarket();
+ this.drawRoundCard();
+ this.renderGame();
+ document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+ }
+ shuffleDeck() {
+ for (let i = this.deck.length - 1; i > 0; i--) {
+ const j = Math.floor(Math.random() * (i + 1));
+ [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+ }
+ }
+ initializePlayers() {
+ this.players = [];
+ for (let i = 0; i < this.playerCount; i++) {
+ this.players.push({
+ id: i,
+ name: `Giocatore ${i + 1}`,
+ score: 0,
+ completedRecipes: [],
+ dice: {
+ red: 1,
+ white: 1,
+ yellow: 1,
+ green: 1
+ }
+ });
+ }
+ }
+ setupMarket() {
+ const cardsNeeded = this.playerCount * 2 + 1;
+ if (this.deck.length < cardsNeeded) {
+ this.deck = this.deck.concat(this.market);
+ this.shuffleDeck();
+ }
+ this.market = this.deck.splice(0, cardsNeeded);
+ }
+ drawRoundCard() {
+ if (this.roundCards.length > 0) {
+ const randomIndex = Math.floor(Math.random() * this.roundCards.length);
+ this.currentRoundCard = this.roundCards[randomIndex];
+ }
+ }
+ renderGame() {
+ this.renderMarket();
+ this.renderPlayerAreas();
+ this.renderRoundCard();
+ document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+ }
+ renderMarket() {
+ const marketArea = document.getElementById('marketArea');
+ marketArea.innerHTML = '';
+ const cardsToShow = this.market.slice(0, this.playerCount * 2 + 1);
+ cardsToShow.forEach((recipe, index) => {
+ const card = this.createRecipeCard(recipe);
+ card.dataset.marketIndex = index;
+ const playerSelector = document.createElement('select');
+ this.players.forEach(player => {
+ const option = document.createElement('option');
+ option.value = player.id;
+ option.text = player.name;
+ playerSelector.appendChild(option);
+ });
+ const confirmButton = document.createElement('button');
+ confirmButton.textContent = 'Conferma';
+ confirmButton.addEventListener('click', () => {
+ const selectedPlayerId = parseInt(playerSelector.value);
+ const selectedPlayer = this.players[selectedPlayerId];
+ selectedPlayer.completedRecipes.push(recipe);
+ selectedPlayer.score += recipe.points;
+ this.market.splice(index, 1);
+ this.endRound();
+ this.renderGame();
+ playerSelector.style.display = 'none';
+ confirmButton.style.display = 'none';
+ });
+ card.addEventListener('click', () => {
+ playerSelector.style.display = 'block';
+ confirmButton.style.display = 'block';
+ });
+ card.appendChild(playerSelector);
+ card.appendChild(confirmButton);
+ marketArea.appendChild(card);
+ });
+ }
+ renderRoundCard() {
+ const roundCardContainer = document.getElementById('roundCardContainer');
+ if (this.currentRoundCard) {
+ roundCardContainer.innerHTML = `
+ <div class="round-card">
+ <div class="round-card-icon">${this.currentRoundCard.Icona}</div>
+ <div class="round-card-name">${this.currentRoundCard.Nome}</div>
+ <div class="round-card-description">${this.currentRoundCard.Descrizione}</div>
+ </div>
+ `;
+ }
+ }
+ renderPlayerAreas() {
+ const playerAreas = document.getElementById('playerAreas');
+ playerAreas.innerHTML = '';
+ this.players.forEach(player => {
+ const playerArea = document.createElement('div');
+ playerArea.className = 'player-area';
+ const { bonusPoints, bonusDetails } = this.calculateBonuses(player);
+ const categories = ['Appetizer', 'Street Food', 'Primo', 'Secondo', 'Dessert', 'Holiday Recipe'];
+ let completedRecipesHTML = '';
+ categories.forEach(category => {
+ const categoryRecipes = player.completedRecipes.filter(recipe => recipe.category.toLowerCase() === category.toLowerCase());
+ if (categoryRecipes.length > 0) {
+ completedRecipesHTML += `<h3>${category}</h3><div class="completed-recipes-category">`;
+ categoryRecipes.forEach(recipe => {
+ const card = this.createRecipeCard(recipe);
+ card.classList.add('completed-card');
+ completedRecipesHTML += card.outerHTML;
+ });
+ completedRecipesHTML += '</div>';
+ }
+ });
+ playerArea.innerHTML = `
+ <h2>${player.name}</h2>
+ <div class="player-score">🏆 ${player.score}${bonusDetails} = ${player.score + bonusPoints}</div>
+ <div class="dice-area">
+ <div class="die red">${player.dice.red}</div>
+ <div class="die white">${player.dice.white}</div>
+ <div class="die yellow">${player.dice.yellow}</div>
+ <div class="die green">${player.dice.green}</div>
+ </div>
+ <button class="roll-dice-btn" onclick="game.rollDice(${player.id})">Lancia i Dadi</button>
+ ${completedRecipesHTML}
+ `;
+ playerAreas.appendChild(playerArea);
+ });
+ }
+ rollDice(playerId) {
+ const player = this.players[playerId];
+ player.dice = {
+ red: Math.floor(Math.random() * 6) + 1,
+ white: Math.floor(Math.random() * 6) + 1,
+ yellow: Math.floor(Math.random() * 6) + 1,
+ green: Math.floor(Math.random() * 6) + 1
+ };
+ this.renderGame();
+ this.campanelloSuonato = false;
+ }
+ handleBellRing() {
+ const bellButton = document.getElementById('kitchenBell');
+ bellButton.classList.add('ringing');
+ this.bellSound.play().catch(() => {
+ this.showNotification('🔔 Ding!');
+ });
+ setTimeout(() => {
+ bellButton.classList.remove('ringing');
+ }, 500);
+ this.showNotification('Verifica la tua combinazione!');
+ }
+ endRound() {
+ if (this.market.length === 0) {
+ if (this.currentRound < this.totalRounds) {
+ this.showNotification(`Fine del Round ${this.currentRound}!`, 3000, () => {
+ this.currentRound++;
+ this.drawRoundCard(); // Pesca una nuova carta round
+ this.setupMarket(); // Avvia il prossimo round
+ this.renderGame();
+ document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+ });
+ } else {
+ this.endGame();
+ }
+ }
+}
+ endGame() {
+ let winner = null;
+ let highestScore = -1;
+ this.players.forEach(player => {
+ const { bonusPoints, bonusDetails } = this.calculateBonuses(player);
+ player.bonusPoints = bonusPoints;
+ player.totalScore = player.score + bonusPoints;
+ if (player.totalScore > highestScore) {
+ winner = player;
+ highestScore = player.totalScore;
+ }
+ });
+ if (winner) {
+ const notification = document.getElementById('notification');
+ notification.innerHTML = `
+ 🎉 ${winner.name} ha vinto con 🏆 ${winner.totalScore} punti totali! 🎉
+ <button id="endGameButton">Termina</button>
+ <button id="restartGameButton">Ricomincia</button>
+ `;
+ notification.style.display = 'block';
+ notification.style.backgroundColor = '#DC143C';
+ notification.style.fontSize = '24px';
+ notification.style.padding = '20px 30px';
+ document.getElementById('endGameButton').addEventListener('click', () => {
+ notification.style.display = 'none';
+ });
+ document.getElementById('restartGameButton').addEventListener('click', () => {
+ notification.style.display = 'none';
+ this.restartGame();
+ });
+ } else {
+ this.showNotification('Pareggio! Nessun vincitore.');
+ }
+ }
+ restartGame() {
+ this.currentRound = 1;
+ this.deck = [...this.recipes];
+ this.shuffleDeck();
+ this.initializePlayers();
+ this.setupMarket();
+ this.renderGame();
+ }
+ createRecipeCard(recipe) {
+ const card = document.createElement('div');
+ card.className = `recipe-card ${recipe.category.replace(' ', '-')}`;
+ card.innerHTML = `
+ <div class="difficulty-stars">${recipe.difficulty}</div>
+ <div class="victory-points">🏆${recipe.points}</div>
+ <div class="category-icon">${this.getCategoryEmoji(recipe.category)}</div>
+ <div class="recipe-name">${recipe.name}</div>
+ <div class="dice-combination">${recipe.combination}</div>
+ `;
+ return card;
+ }
+ getCategoryEmoji(category) {
+ const emojis = {
+ 'Appetizer': '🥟',
+ 'Street Food': '🌮',
+ 'Primo': '🍝',
+ 'Secondo': '🍖',
+ 'Dessert': '🍰',
+ 'Holiday Recipe': '🎄'
+ };
+ return emojis[category] || '🍽️';
+ }
+ }
+ const game = new Game();
+ </script>
+</body>
+</html>

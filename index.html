@@ -9,14 +9,24 @@
 <body>
     <div class="welcome-screen" id="welcomeScreen">
         <h1>4 Dadi🎲 in Padella🍲</h1>
-        <label class="file-upload-label">
-            Carica Ricette CSV
-            <input type="file" id="csvFileInput" accept=".csv">
-        </label>
-        <label class="file-upload-label">
-            Carica Carte Round CSV
-            <input type="file" id="roundCsvFileInput" accept=".csv">
-        </label>
+
+        <div class="file-upload-container">
+            <label class="file-upload-label">
+                📂 Carica Ricette CSV
+                <input type="file" id="csvFileInput" accept=".csv">
+            </label>
+            <button id="loadDefaultRecipes">Usa CSV Ufficiale</button>
+        </div>
+    
+        <div class="file-upload-container">
+            <label class="file-upload-label">
+                📂 Carica Carte Round CSV
+                <input type="file" id="roundCsvFileInput" accept=".csv">
+            </label>
+            <button id="loadDefaultRoundCards">Usa CSV Ufficiale</button>
+        </div>
+
+
         <div class="player-selector">
             <label for="playerCount">Numero di Giocatori:</label>
             <select id="playerCount">

@@ -6,13 +6,13 @@ class Game {
     this.currentRound = 1;
     this.deck = [];
     this.playerCount = 2;
-    this.totalRounds = 3;
+    this.totalRounds = 3; // Valore predefinito
     this.activePlayer = 0;
     this.bellSound = document.getElementById('bellSound');
     this.roundCards = [];
     this.currentRoundCard = null;
-    this.recipesLoaded = false;
-    this.roundCardsLoaded = false;
+    this.recipesLoaded = false; // Aggiunta la variabile per il caricamento delle ricette
+    this.roundCardsLoaded = false; // Aggiunta la variabile per il caricamento delle carte round
     this.setupEventListeners();
   }
 
@@ -22,7 +22,7 @@ class Game {
     const startBtn = document.getElementById('startGameBtn');
 
     csvInput.addEventListener('change', (event) => {
-      const file = event.target.files[0]; // Accedi al primo file
+      const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -30,16 +30,16 @@ class Game {
             console.log('File CSV caricato:', e.target.result); // Debug
             this.recipes = this.parseCSV(e.target.result);
             if (this.recipes.length > 0) {
-              this.recipesLoaded = true;
+              this.recipesLoaded = true; // Aggiorna la variabile
               this.showNotification('Ricette caricate con successo!');
-              this.checkFilesLoaded();
+              this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
             } else {
               throw new Error('Nessuna ricetta trovata nel file CSV');
             }
           } catch (error) {
             this.showNotification('Errore nel caricamento del file: ' + error.message);
-            this.recipesLoaded = false;
-            this.checkFilesLoaded();
+            this.recipesLoaded = false; // Aggiorna la variabile
+            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
           }
         };
         reader.readAsText(file);
@@ -47,7 +47,7 @@ class Game {
     });
 
     roundCsvInput.addEventListener('change', (event) => {
-      const file = event.target.files[0]; // Accedi al primo file
+      const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -55,16 +55,252 @@ class Game {
             console.log('File CSV round caricato:', e.target.result); // Debug
             this.roundCards = this.parseRoundCSV(e.target.result);
             if (this.roundCards.length > 0) {
-              this.roundCardsLoaded = true;
+              this.roundCardsLoaded = true; // Aggiorna la variabile
               this.showNotification('Carte round caricate con successo!');
-              this.checkFilesLoaded();
+              this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
             } else {
               throw new Error('Nessuna carta trovata nel file CSV');
             }
           } catch (error) {
             this.showNotification('Errore nel caricamento del file: ' + error.message);
-            this.roundCardsLoaded = false;
+            this.roundCardsLoaded = false; // Aggiorna la variabile
+            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    document.getElementById('csvSource').addEventListener('change', (event) => {
+      const csvSource = event.target.value;
+      const localCsvUpload = document.getElementById('localCsvUpload');
+      if (csvSource === 'local') {
+        localCsvUpload.style.display = 'block';
+        this.recipesLoaded = false;
+        this.roundCardsLoaded = false;
+        this.checkFilesLoaded();
+      } else if (csvSource === 'github') {
+        localCsvUpload.style.display = 'none';
+        this.loadGitHubCSV();
+      }
+    });
+
+    startBtn.addEventListener('click', () => this.startGame());
+    document.getElementById('kitchenBell').addEventListener('click', () => this.handleBellRing());
+  }
+
+  loadGitHubCSV() {
+    const githubRepo = "https://raw.githubusercontent.com/GitMax76/4Dadi/main/";
+    fetch(githubRepo + 'recipes.csv')
+      .then(response => response.text())
+      .then(csvText => {
+        try {
+          console.log('File CSV da GitHub caricato:', csvText); // Debug
+          this.recipes = this.parseCSV(csvText);
+          if (this.recipes.length > 0) {
+            this.recipesLoaded = true;
+            this.showNotification('Ricette caricate da GitHub con successo!');
             this.checkFilesLoaded();
+          } else {
+            throw new Error('Nessuna ricetta trovata nel file CSV su GitHub');
+          }
+        } catch (error) {
+          this.showNotification('Errore nel caricamento del file CSV da GitHub: ' + error.message);
+          this.recipesLoaded = false;
+          this.checkFilesLoaded();
+        }
+      });
+
+    fetch(githubRepo + 'rounds.csv')
+      .then(response => response.text())
+      .then(csvText => {
+        try {
+          console.log('File CSV round da GitHub caricato:', csvText); // Debug
+          this.roundCards = this.parseRoundCSV(csvText);
+          if (this.roundCards.length > 0) {
+            this.roundCardsLoaded = true;
+            this.showNotification('Carte round caricate da GitHub con successo!');
+            this.checkFilesLoaded();
+          } else {
+            throw new Error('Nessuna carta trovata nel file CSV su GitHub');
+          }
+        } catch (error) {
+          this.showNotification('Errore nel caricamento del file CSV da GitHub: ' + error.message);
+          this.roundCardsLoaded = false;
+          this.checkFilesLoaded();
+        }
+      });
+  }
+
+  checkFilesLoaded() {
+    const startBtn = document.getElementById('startGameBtn');
+    if (this.recipesLoaded && this.roundCardsLoaded) {
+      startBtn.disabled = false;
+      startBtn.style.backgroundColor = '#4CAF50';
+    } else {
+      startBtn.disabled = true;
+      startBtn.style.backgroundColor = '#cccccc';
+    }
+  }
+
+  showNotification(message, timeout = 3000, callback = null) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+      if (callback) callback();
+    }, timeout);
+  }
+
+  parseCSV(csvText) {
+    const lines = csvText.split('\n');
+    const recipes = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line) {
+        const [name, difficulty, category, points, combination] = line.split(',');
+        if (!name || !difficulty || !category || !points || !combination) {
+          throw new Error('Formato CSV non valido alla riga ' + i);
+        }
+        recipes.push({
+          name: name.trim(),
+          difficulty: difficulty.trim(),
+          category: category.trim(),
+          points: parseInt(points),
+          combination: combination.trim()
+        });
+      }
+    }
+    return recipes;
+  }
+
+  parseRoundCSV(csvText) {
+    const lines = csvText.split('\n');
+    const roundCards = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line) {
+        const [Nome, Icona, Descrizione] = line.split(',');
+        if (!Nome || !Icona || !Descrizione) {
+          throw new Error('Formato CSV non valido alla riga ' + i);
+        }
+        roundCards.push({
+          Nome: Nome.trim(),
+          Icona: Icona.trim(),
+          Descrizione: Descrizione.trim()
+        });
+      }
+    }
+    return roundCards;
+  }
+
+  startGame() {
+    this.playerCount = parseInt(document.getElementById('playerCount').value);
+    this.totalRounds = parseInt(document.getElementById('roundCount').value);
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    this.deck = [...this.recipes];
+    this.shuffleDeck();
+    this.initializePlayers();
+    this.setupMarket();
+    this.drawRoundCard();
+    this.renderGame();
+    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+  }
+
+  shuffleDeck() {
+    for (let i = this.deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+    }
+  }
+
+  initializePlayers() {
+    this.players = [];
+    for (let i = 0; i < this.playerCount; i++) {
+      this.players.push({
+        id: i,
+        name: `Giocatore ${i + 1}`,
+        score: 0,
+        completedRecipes: [],
+        dice: {
+          red: 1,
+          white: 1,
+          yellow: 1,
+          green: 1
+        }
+      });
+    }
+  }
+
+  class Game {
+  constructor() {
+    this.recipes = [];
+    this.players = [];
+    this.market = [];
+    this.currentRound = 1;
+    this.deck = [];
+    this.playerCount = 2;
+    this.totalRounds = 3; // Valore predefinito
+    this.activePlayer = 0;
+    this.bellSound = document.getElementById('bellSound');
+    this.roundCards = [];
+    this.currentRoundCard = null;
+    this.recipesLoaded = false; // Aggiunta la variabile per il caricamento delle ricette
+    this.roundCardsLoaded = false; // Aggiunta la variabile per il caricamento delle carte round
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    const csvInput = document.getElementById('csvFileInput');
+    const roundCsvInput = document.getElementById('roundCsvFileInput');
+    const startBtn = document.getElementById('startGameBtn');
+
+    csvInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            console.log('File CSV caricato:', e.target.result); // Debug
+            this.recipes = this.parseCSV(e.target.result);
+            if (this.recipes.length > 0) {
+              this.recipesLoaded = true; // Aggiorna la variabile
+              this.showNotification('Ricette caricate con successo!');
+              this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+            } else {
+              throw new Error('Nessuna ricetta trovata nel file CSV');
+            }
+          } catch (error) {
+            this.showNotification('Errore nel caricamento del file: ' + error.message);
+            this.recipesLoaded = false; // Aggiorna la variabile
+            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    roundCsvInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            console.log('File CSV round caricato:', e.target.result); // Debug
+            this.roundCards = this.parseRoundCSV(e.target.result);
+            if (this.roundCards.length > 0) {
+              this.roundCardsLoaded = true; // Aggiorna la variabile
+              this.showNotification('Carte round caricate con successo!');
+              this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+            } else {
+              throw new Error('Nessuna carta trovata nel file CSV');
+            }
+          } catch (error) {
+            this.showNotification('Errore nel caricamento del file: ' + error.message);
+            this.roundCardsLoaded = false; // Aggiorna la variabile
+            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
           }
         };
         reader.readAsText(file);
@@ -249,7 +485,8 @@ class Game {
       this.currentRoundCard = this.roundCards[randomIndex];
     }
   }
-renderGame() {
+
+  renderGame() {
     this.renderMarket();
     this.renderPlayerAreas();
     this.renderRoundCard();
@@ -372,8 +609,8 @@ renderGame() {
       if (this.currentRound < this.totalRounds) {
         this.showNotification(`Fine del Round ${this.currentRound}!`, 3000, () => {
           this.currentRound++;
-          this.drawRoundCard();
-          this.setupMarket();
+          this.drawRoundCard(); // Pesca una nuova carta round
+          this.setupMarket(); // Avvia il prossimo round
           this.renderGame();
           document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
         });
@@ -387,15 +624,32 @@ renderGame() {
     let winner = null;
     let highestScore = -1;
     this.players.forEach(player => {
-      const { bonusPoints } = this.calculateBonuses(player);
-      const totalScore = player.score + bonusPoints;
-      if (totalScore > highestScore) {
+      const { bonusPoints, bonusDetails } = this.calculateBonuses(player);
+      player.bonusPoints = bonusPoints;
+      player.totalScore = player.score + bonusPoints;
+      if (player.totalScore > highestScore) {
         winner = player;
-        highestScore = totalScore;
+        highestScore = player.totalScore;
       }
     });
     if (winner) {
-      this.showNotification(`🎉 ${winner.name} ha vinto con 🏆 ${highestScore} punti totali! 🎉`);
+      const notification = document.getElementById('notification');
+      notification.innerHTML = `
+        🎉 ${winner.name} ha vinto con 🏆 ${winner.totalScore} punti totali! 🎉
+        <button id="endGameButton">Termina</button>
+        <button id="restartGameButton">Ricomincia</button>
+      `;
+      notification.style.display = 'block';
+      notification.style.backgroundColor = '#DC143C';
+      notification.style.fontSize = '24px';
+      notification.style.padding = '20px 30px';
+      document.getElementById('endGameButton').addEventListener('click', () => {
+        notification.style.display = 'none';
+      });
+      document.getElementById('restartGameButton').addEventListener('click', () => {
+        notification.style.display = 'none';
+        this.restartGame();
+      });
     } else {
       this.showNotification('Pareggio! Nessun vincitore.');
     }
@@ -407,11 +661,7 @@ renderGame() {
     this.shuffleDeck();
     this.initializePlayers();
     this.setupMarket();
-    this.drawRoundCard();
     this.renderGame();
-    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
-    document.getElementById('welcomeScreen').style.display = 'block';
-    document.getElementById('gameScreen').style.display = 'none';
   }
 
   createRecipeCard(recipe) {

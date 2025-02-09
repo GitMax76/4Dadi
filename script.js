@@ -107,7 +107,7 @@ class Game {
                 this.recipesLoaded = false;
                 this.roundCardsLoaded = false;
                 this.checkFilesLoaded();
-            } else if (csvSource === 'github') { // Usare 'github' invece di 'official'
+            } else if (csvSource === 'github') {
                 localCsvUpload.style.display = 'none';
                 this.loadGitHubCSV();
             }
@@ -127,13 +127,13 @@ class Game {
                     this.recipes = this.parseCSV(csvText);
                     if (this.recipes.length > 0) {
                         this.recipesLoaded = true;
-                        this.showNotification('Ricette caricate da GitHub con successo!');
+                        this.showNotification('Ricette ufficiali caricate con successo!');
                         this.checkFilesLoaded();
                     } else {
-                        throw new Error('Nessuna ricetta trovata nel file CSV su GitHub');
+                        throw new Error('Nessuna ricetta trovata nel file CSV ufficiale');
                     }
                 } catch (error) {
-                    this.showNotification('Errore nel caricamento del file CSV da GitHub: ' + error.message);
+                    this.showNotification('Errore nel caricamento del file CSV ufficiale: ' + error.message);
                     this.recipesLoaded = false;
                     this.checkFilesLoaded();
                 }
@@ -146,13 +146,13 @@ class Game {
                     this.roundCards = this.parseRoundCSV(csvText);
                     if (this.roundCards.length > 0) {
                         this.roundCardsLoaded = true;
-                        this.showNotification('Carte round caricate da GitHub con successo!');
+                        this.showNotification('Carte round ufficiali caricate con successo!');
                         this.checkFilesLoaded();
                     } else {
-                        throw new Error('Nessuna carta trovata nel file CSV su GitHub');
+                        throw new Error('Nessuna carta trovata nel file CSV ufficiale');
                     }
                 } catch (error) {
-                    this.showNotification('Errore nel caricamento del file CSV da GitHub: ' + error.message);
+                    this.showNotification('Errore nel caricamento del file CSV ufficiale: ' + error.message);
                     this.roundCardsLoaded = false;
                     this.checkFilesLoaded();
                 }
@@ -436,8 +436,8 @@ class Game {
         this.initializePlayers();
         this.setupMarket();
         this.drawRoundCard();
-		this.renderGame();
-        document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+        this.renderGame();
+	document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
         document.getElementById('welcomeScreen').style.display = 'block';
         document.getElementById('gameScreen').style.display = 'none';
     }

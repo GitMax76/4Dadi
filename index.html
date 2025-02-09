@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4 Dadi🎲 in Padella🍲</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 Dadi🎲 in Padella🍲</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="welcome-screen" id="welcomeScreen">
-        <h1>4 Dadi🎲 in Padella🍲</h1>
-        <div>
-            <label for="csvSource">Scegli la sorgente CSV:</label>
-            <select id="csvSource">
-                <option value="local">Carica file locali</option>
-                <option value="official">Usa CSV ufficiali</option>
-            </select>
-        </div>
-        <div id="localCsvUpload" style="display: block;">
-            <label class="file-upload-label">
-                Carica Ricette CSV
-                <input type="file" id="csvFileInput" accept=".csv">
-            </label>
-            <label class="file-upload-label">
-                Carica Carte Round CSV
-                <input type="file" id="roundCsvFileInput" accept=".csv">
-            </label>
-        </div>
-        <div class="player-selector">
-            <label for="playerCount">Numero di Giocatori:</label>
-            <select id="playerCount">
-                <option value="2">2 Giocatori</option>
-                <option value="3">3 Giocatori</option>
-                <option value="4">4 Giocatori</option>
-            </select>
-            <label for="roundCount">Numero di Round:</label>
-            <select id="roundCount">
-                <option value="3">3 Round</option>
-                <option value="5">5 Round</option>
-                <option value="7">7 Round</option>
-            </select>
-        </div>
-        <button id="startGameBtn" disabled>Inizia la Partita</button>
+  <div class="welcome-screen" id="welcomeScreen">
+    <h1>4 Dadi🎲 in Padella🍲</h1>
+    <form action="#">
+      <label for="csvSource">Scegli la sorgente CSV:</label>
+      <select id="csvSource" class="input-style" required>
+        <option value="">Seleziona sorgente</option>
+        <option value="official">Usa CSV ufficiali</option>
+        <option value="local">Carica CSV locali</option>
+      </select>
+    </form>
+    <div id="localCsvUpload" style="display: none;">
+      <label class="file-upload-label">
+        Carica Ricette CSV
+        <input type="file" id="csvFileInput" accept=".csv">
+      </label>
+      <label class="file-upload-label">
+        Carica Carte Round CSV
+        <input type="file" id="roundCsvFileInput" accept=".csv">
+      </label>
     </div>
-    <div class="game-screen" id="gameScreen">
-        <div class="round-indicator">
-            <span class="round-label">Round: <span id="roundNumber"></span></span>
-            <div id="roundCardContainer"></div>
-        </div>
-        <div class="market-area" id="marketArea"></div>
-        <button class="bell-button" id="kitchenBell">🔔 Campanello della Cucina</button>
-        <div class="player-areas" id="playerAreas"></div>
+    <div class="player-selector">
+      <label for="playerCount">Numero di Giocatori:</label>
+      <select id="playerCount">
+        <option value="2">2 Giocatori</option>
+        <option value="3">3 Giocatori</option>
+        <option value="4">4 Giocatori</option>
+      </select>
+      <label for="roundCount">Numero di Round:</label>
+      <select id="roundCount">
+        <option value="3">3 Round</option>
+        <option value="5">5 Round</option>
+        <option value="7">7 Round</option>
+      </select>
     </div>
-    <div class="notification" id="notification"></div>
-    <audio id="bellSound" src="bell.wav"></audio>
-    <script src="script.js"></script>
+    <button id="startGameBtn" disabled>Inizia la Partita</button>
+  </div>
+  <div class="game-screen" id="gameScreen">
+    <div class="round-indicator">
+      <span class="round-label">Round: <span id="roundNumber"></span></span>
+      <div id="roundCardContainer"></div>
+    </div>
+    <div class="market-area" id="marketArea"></div>
+    <button class="bell-button" id="kitchenBell">🔔 Campanello della Cucina</button>
+    <div class="player-areas" id="playerAreas"></div>
+  </div>
+  <div class="notification" id="notification"></div>
+  <audio id="bellSound" src="bell.wav"></audio>
+  <script src="script.js"></script>
 </body>
 </html>

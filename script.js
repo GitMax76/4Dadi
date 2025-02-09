@@ -143,7 +143,7 @@ class Game {
     }
   }
 
-  showNotification(message, timeout = 3000, callback = null) {
+showNotification(message, timeout = 3000, callback = null) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.style.display = 'block';
@@ -384,7 +384,7 @@ class Game {
     }
   }
 
-   endGame() {
+ endGame() {
     let winner = null;
     let highestScore = -1;
     this.players.forEach(player => {

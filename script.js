@@ -118,7 +118,7 @@ class Game {
     }
 
     loadGitHubCSV() {
-        const githubRepo = "https://raw.githubusercontent.com/GitMax76/4Dadi/main/";
+        const githubRepo = "https://raw.githubusercontent.com/GitMax76/4Dadi\";
 
         fetch(githubRepo + 'recipes.csv')
           .then(response => response.text())

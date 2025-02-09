@@ -18,8 +18,8 @@ class Game {
 
   setupEventListeners() {
     const csvInput = document.getElementById('csvFileInput');
-    const startBtn = document.getElementById('startGameBtn');
     const roundCsvInput = document.getElementById('roundCsvFileInput');
+    const startBtn = document.getElementById('startGameBtn');
 
     csvInput.addEventListener('change', (event) => {
       const file = event.target.files[0]; // Accedi al primo file
@@ -27,6 +27,7 @@ class Game {
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
+            console.log('File CSV caricato:', e.target.result); // Debug
             this.recipes = this.parseCSV(e.target.result);
             if (this.recipes.length > 0) {
               this.recipesLoaded = true;
@@ -51,6 +52,7 @@ class Game {
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
+            console.log('File CSV round caricato:', e.target.result); // Debug
             this.roundCards = this.parseRoundCSV(e.target.result);
             if (this.roundCards.length > 0) {
               this.roundCardsLoaded = true;
@@ -93,6 +95,7 @@ class Game {
       .then(response => response.text())
       .then(csvText => {
         try {
+          console.log('File CSV da GitHub caricato:', csvText); // Debug
           this.recipes = this.parseCSV(csvText);
           if (this.recipes.length > 0) {
             this.recipesLoaded = true;
@@ -112,6 +115,7 @@ class Game {
       .then(response => response.text())
       .then(csvText => {
         try {
+          console.log('File CSV round da GitHub caricato:', csvText); // Debug
           this.roundCards = this.parseRoundCSV(csvText);
           if (this.roundCards.length > 0) {
             this.roundCardsLoaded = true;
@@ -139,302 +143,301 @@ class Game {
     }
   }
 
-    showNotification(message, timeout = 3000, callback = null) {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.style.display = 'block';
-        setTimeout(() => {
-            notification.style.display = 'none';
-            if (callback) callback();
-        }, timeout);
-    }
+  showNotification(message, timeout = 3000, callback = null) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+      if (callback) callback();
+    }, timeout);
+  }
 
-    parseCSV(csvText) {
-        const lines = csvText.split('\n');
-        const recipes =;
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (line) {
-                const [name, difficulty, category, points, combination] = line.split(',');
-                if (!name ||!difficulty ||!category ||!points ||!combination) {
-                    throw new Error('Formato CSV non valido alla riga ' + i);
-                }
-                recipes.push({
-                    name: name.trim(),
-                    difficulty: difficulty.trim(),
-                    category: category.trim(),
-                    points: parseInt(points),
-                    combination: combination.trim()
-                });
-            }
+  parseCSV(csvText) {
+    const lines = csvText.split('\n');
+    const recipes = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line) {
+        const [name, difficulty, category, points, combination] = line.split(',');
+        if (!name || !difficulty || !category || !points || !combination) {
+          throw new Error('Formato CSV non valido alla riga ' + i);
         }
-        return recipes;
+        recipes.push({
+          name: name.trim(),
+          difficulty: difficulty.trim(),
+          category: category.trim(),
+          points: parseInt(points),
+          combination: combination.trim()
+        });
+      }
     }
+    return recipes;
+  }
 
-    parseRoundCSV(csvText) {
-        const lines = csvText.split('\n');
-        const roundCards =;
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (line) {
-                const [Nome, Icona, Descrizione] = line.split(',');
-                if (!Nome ||!Icona ||!Descrizione) {
-                    throw new Error('Formato CSV non valido alla riga ' + i);
-                }
-                roundCards.push({
-                    Nome: Nome.trim(),
-                    Icona: Icona.trim(),
-                    Descrizione: Descrizione.trim()
-                });
-            }
+  parseRoundCSV(csvText) {
+    const lines = csvText.split('\n');
+    const roundCards = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line) {
+        const [Nome, Icona, Descrizione] = line.split(',');
+        if (!Nome || !Icona || !Descrizione) {
+          throw new Error('Formato CSV non valido alla riga ' + i);
         }
-        return roundCards;
+        roundCards.push({
+          Nome: Nome.trim(),
+          Icona: Icona.trim(),
+          Descrizione: Descrizione.trim()
+        });
+      }
     }
+    return roundCards;
+  }
 
-    startGame() {
-        this.playerCount = parseInt(document.getElementById('playerCount').value);
-        this.totalRounds = parseInt(document.getElementById('roundCount').value);
-        document.getElementById('welcomeScreen').style.display = 'none';
-        document.getElementById('gameScreen').style.display = 'block';
-        this.deck = [...this.recipes];
-        this.shuffleDeck();
-        this.initializePlayers();
-        this.setupMarket();
-        this.drawRoundCard();
+  startGame() {
+    this.playerCount = parseInt(document.getElementById('playerCount').value);
+    this.totalRounds = parseInt(document.getElementById('roundCount').value);
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    this.deck = [...this.recipes];
+    this.shuffleDeck();
+    this.initializePlayers();
+    this.setupMarket();
+    this.drawRoundCard();
+    this.renderGame();
+    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+  }
+
+  shuffleDeck() {
+    for (let i = this.deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+    }
+  }
+
+  initializePlayers() {
+    this.players = [];
+    for (let i = 0; i < this.playerCount; i++) {
+      this.players.push({
+        id: i,
+        name: `Giocatore ${i + 1}`,
+        score: 0,
+        completedRecipes: [],
+        dice: {
+          red: 1,
+          white: 1,
+          yellow: 1,
+          green: 1
+        }
+      });
+    }
+  }
+
+  setupMarket() {
+    const cardsNeeded = this.playerCount * 2 + 1;
+    if (this.deck.length < cardsNeeded) {
+      this.deck = this.deck.concat(this.market);
+      this.shuffleDeck();
+    }
+    this.market = this.deck.splice(0, cardsNeeded);
+  }
+
+  drawRoundCard() {
+    if (this.roundCards.length > 0) {
+      const randomIndex = Math.floor(Math.random() * this.roundCards.length);
+      this.currentRoundCard = this.roundCards[randomIndex];
+    }
+  }
+renderGame() {
+    this.renderMarket();
+    this.renderPlayerAreas();
+    this.renderRoundCard();
+    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+  }
+
+  renderMarket() {
+    const marketArea = document.getElementById('marketArea');
+    marketArea.innerHTML = '';
+    const cardsToShow = this.market.slice(0, this.playerCount * 2 + 1);
+    cardsToShow.forEach((recipe, index) => {
+      const card = this.createRecipeCard(recipe);
+      card.dataset.marketIndex = index;
+      const playerSelector = document.createElement('select');
+      this.players.forEach(player => {
+        const option = document.createElement('option');
+        option.value = player.id;
+        option.text = player.name;
+        playerSelector.appendChild(option);
+      });
+      const confirmButton = document.createElement('button');
+      confirmButton.textContent = 'Conferma';
+      confirmButton.addEventListener('click', () => {
+        const selectedPlayerId = parseInt(playerSelector.value);
+        const selectedPlayer = this.players[selectedPlayerId];
+        selectedPlayer.completedRecipes.push(recipe);
+        selectedPlayer.score += recipe.points;
+        this.market.splice(index, 1);
+        this.endRound();
         this.renderGame();
-        document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
-    }
+        playerSelector.style.display = 'none';
+        confirmButton.style.display = 'none';
+      });
+      card.addEventListener('click', () => {
+        playerSelector.style.display = 'block';
+        confirmButton.style.display = 'block';
+      });
+      card.appendChild(playerSelector);
+      card.appendChild(confirmButton);
+      marketArea.appendChild(card);
+    });
+  }
 
-    shuffleDeck() {
-        for (let i = this.deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
-        }
+  renderRoundCard() {
+    const roundCardContainer = document.getElementById('roundCardContainer');
+    if (this.currentRoundCard) {
+      roundCardContainer.innerHTML = `
+        <div class="round-card">
+          <div class="round-card-icon">${this.currentRoundCard.Icona}</div>
+          <div class="round-card-name">${this.currentRoundCard.Nome}</div>
+          <div class="round-card-description">${this.currentRoundCard.Descrizione}</div>
+        </div>
+      `;
     }
+  }
 
-    initializePlayers() {
-        this.players =;
-        for (let i = 0; i < this.playerCount; i++) {
-            this.players.push({
-                id: i,
-                name: `Giocatore ${i + 1}`,
-                score: 0,
-                completedRecipes:,
-                dice: {
-                    red: 1,
-                    white: 1,
-                    yellow: 1,
-                    green: 1
-                }
-            });
-        }
-    }
-
-    setupMarket() {
-        const cardsNeeded = this.playerCount * 2 + 1;
-        if (this.deck.length < cardsNeeded) {
-            this.deck = this.deck.concat(this.market);
-            this.shuffleDeck();
-        }
-        this.market = this.deck.splice(0, cardsNeeded);
-    }
-
-    drawRoundCard() {
-        if (this.roundCards.length > 0) {
-            const randomIndex = Math.floor(Math.random() * this.roundCards.length);
-            this.currentRoundCard = this.roundCards[randomIndex];
-        }
-    }
-
-    renderGame() {
-        this.renderMarket();
-        this.renderPlayerAreas();
-        this.renderRoundCard();
-        document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
-    }
-
-    renderMarket() {
-        const marketArea = document.getElementById('marketArea');
-        marketArea.innerHTML = '';
-        const cardsToShow = this.market.slice(0, this.playerCount * 2 + 1);
-        cardsToShow.forEach((recipe, index) => {
+  renderPlayerAreas() {
+    const playerAreas = document.getElementById('playerAreas');
+    playerAreas.innerHTML = '';
+    this.players.forEach(player => {
+      const playerArea = document.createElement('div');
+      playerArea.className = 'player-area';
+      const { bonusPoints, bonusDetails } = this.calculateBonuses(player);
+      const categories = ['Appetizer', 'Street Food', 'Primo', 'Secondo', 'Dessert', 'Holiday Recipe'];
+      let completedRecipesHTML = '';
+      categories.forEach(category => {
+        const categoryRecipes = player.completedRecipes.filter(recipe => recipe.category.toLowerCase() === category.toLowerCase());
+        if (categoryRecipes.length > 0) {
+          completedRecipesHTML += `<h3>${category}</h3><div class="completed-recipes-category">`;
+          categoryRecipes.forEach(recipe => {
             const card = this.createRecipeCard(recipe);
-            card.dataset.marketIndex = index;
-            const playerSelector = document.createElement('select');
-            this.players.forEach(player => {
-                const option = document.createElement('option');
-                option.value = player.id;
-                option.text = player.name;
-                playerSelector.appendChild(option);
-            });
-            const confirmButton = document.createElement('button');
-            confirmButton.textContent = 'Conferma';
-            confirmButton.addEventListener('click', () => {
-                const selectedPlayerId = parseInt(playerSelector.value);
-                const selectedPlayer = this.players[selectedPlayerId];
-                selectedPlayer.completedRecipes.push(recipe);
-                selectedPlayer.score += recipe.points;
-                this.market.splice(index, 1);
-                this.endRound();
-                this.renderGame();
-                playerSelector.style.display = 'none';
-                confirmButton.style.display = 'none';
-            });
-            card.addEventListener('click', () => {
-                playerSelector.style.display = 'block';
-                confirmButton.style.display = 'block';
-            });
-            card.appendChild(playerSelector);
-            card.appendChild(confirmButton);
-            marketArea.appendChild(card);
-        });
-    }
-
-    renderRoundCard() {
-        const roundCardContainer = document.getElementById('roundCardContainer');
-        if (this.currentRoundCard) {
-            roundCardContainer.innerHTML = `
-                <div class="round-card">
-                    <div class="round-card-icon"><span class="math-inline">\{this\.currentRoundCard\.Icona\}</div\>
-<div class\="round\-card\-name"\></span>{this.currentRoundCard.Nome}</div>
-                    <div class="round-card-description">${this.currentRoundCard.Descrizione}</div>
-                </div>
-            `;
+            card.classList.add('completed-card');
+            completedRecipesHTML += card.outerHTML;
+          });
+          completedRecipesHTML += '</div>';
         }
-    }
+      });
+      playerArea.innerHTML = `
+        <h2>${player.name}</h2>
+        <div class="player-score">🏆 ${player.score}${bonusDetails} = ${player.score + bonusPoints}</div>
+        <div class="dice-area">
+          <div class="die red">${player.dice.red}</div>
+          <div class="die white">${player.dice.white}</div>
+          <div class="die yellow">${player.dice.yellow}</div>
+          <div class="die green">${player.dice.green}</div>
+        </div>
+        <button class="roll-dice-btn" onclick="game.rollDice(${player.id})">Lancia i Dadi</button>
+        ${completedRecipesHTML}
+      `;
+      playerAreas.appendChild(playerArea);
+    });
+  }
 
-    renderPlayerAreas() {
-        const playerAreas = document.getElementById('playerAreas');
-        playerAreas.innerHTML = '';
-        this.players.forEach(player => {
-            const playerArea = document.createElement('div');
-            playerArea.className = 'player-area';
-            const { bonusPoints, bonusDetails } = this.calculateBonuses(player);
-            const categories = ['Appetizer', 'Street Food', 'Primo', 'Secondo', 'Dessert', 'Holiday Recipe'];
-            let completedRecipesHTML = '';
-            categories.forEach(category => {
-                const categoryRecipes = player.completedRecipes.filter(recipe => recipe.category.toLowerCase() === category.toLowerCase());
-                if (categoryRecipes.length > 0) {
-                    completedRecipesHTML += `<h3>${category}</h3><div class="completed-recipes-category">`;
-                    categoryRecipes.forEach(recipe => {
-                        const card = this.createRecipeCard(recipe);
-                        card.classList.add('completed-card');
-                        completedRecipesHTML += card.outerHTML;
-                    });
-                    completedRecipesHTML += '</div>';
-                }
-            });
-            playerArea.innerHTML = `
-                <h2>${player.name}</h2>
-                <div class="player-score">🏆 <span class="math-inline">\{player\.score\}</span>{bonusDetails} = <span class="math-inline">\{player\.score \+ bonusPoints\}</div\>
-<div class\="dice\-area"\>
-<div class\="die red"\></span>{player.dice.red}</div>
-                    <div class="die white"><span class="math-inline">\{player\.dice\.white\}</div\>
-<div class\="die yellow"\></span>{player.dice.yellow}</div>
-                    <div class="die green"><span class="math-inline">\{player\.dice\.green\}</div\>
-</div\>
-<button class\="roll\-dice\-btn" onclick\="game\.rollDice\(</span>{player.id})">Lancia i Dadi</button>
-                ${completedRecipesHTML}
-            `;
-            playerAreas.appendChild(playerArea);
+  rollDice(playerId) {
+    const player = this.players[playerId];
+    player.dice = {
+      red: Math.floor(Math.random() * 6) + 1,
+      white: Math.floor(Math.random() * 6) + 1,
+      yellow: Math.floor(Math.random() * 6) + 1,
+      green: Math.floor(Math.random() * 6) + 1
+    };
+    this.renderGame();
+    this.campanelloSuonato = false;
+  }
+
+  handleBellRing() {
+    const bellButton = document.getElementById('kitchenBell');
+    bellButton.classList.add('ringing');
+    this.bellSound.play().catch(() => {
+      this.showNotification('🔔 Ding!');
+    });
+    setTimeout(() => {
+      bellButton.classList.remove('ringing');
+    }, 500);
+    this.showNotification('Verifica la tua combinazione!');
+  }
+
+  endRound() {
+    if (this.market.length === 0) {
+      if (this.currentRound < this.totalRounds) {
+        this.showNotification(`Fine del Round ${this.currentRound}!`, 3000, () => {
+          this.currentRound++;
+          this.drawRoundCard();
+          this.setupMarket();
+          this.renderGame();
+          document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
         });
+      } else {
+        this.endGame();
+      }
     }
+  }
 
-    rollDice(playerId) {
-        const player = this.players[playerId];
-        player.dice = {
-            red: Math.floor(Math.random() * 6) + 1,
-            white: Math.floor(Math.random() * 6) + 1,
-            yellow: Math.floor(Math.random() * 6) + 1,
-            green: Math.floor(Math.random() * 6) + 1
-        };
-        this.renderGame();
-        this.campanelloSuonato = false;
+  endGame() {
+    let winner = null;
+    let highestScore = -1;
+    this.players.forEach(player => {
+      const { bonusPoints } = this.calculateBonuses(player);
+      const totalScore = player.score + bonusPoints;
+      if (totalScore > highestScore) {
+        winner = player;
+        highestScore = totalScore;
+      }
+    });
+    if (winner) {
+      this.showNotification(`🎉 ${winner.name} ha vinto con 🏆 ${highestScore} punti totali! 🎉`);
+    } else {
+      this.showNotification('Pareggio! Nessun vincitore.');
     }
+  }
 
-    handleBellRing() {
-        const bellButton = document.getElementById('kitchenBell');
-        bellButton.classList.add('ringing');
-        this.bellSound.play().catch(() => {
-            this.showNotification('🔔 Ding!');
-        });
-        setTimeout(() => {
-            bellButton.classList.remove('ringing');
-        }, 500);
-        this.showNotification('Verifica la tua combinazione!');
-    }
+  restartGame() {
+    this.currentRound = 1;
+    this.deck = [...this.recipes];
+    this.shuffleDeck();
+    this.initializePlayers();
+    this.setupMarket();
+    this.drawRoundCard();
+    this.renderGame();
+    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
+    document.getElementById('welcomeScreen').style.display = 'block';
+    document.getElementById('gameScreen').style.display = 'none';
+  }
 
-    endRound() {
-        if (this.market.length === 0) {
-            if (this.currentRound < this.totalRounds) {
-                this.showNotification(`Fine del Round ${this.currentRound}!`, 3000, () => {
-                    this.currentRound++;
-                    this.drawRoundCard();
-                    this.setupMarket();
-                    this.renderGame();
-                    document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
-                });
-            } else {
-                this.endGame();
-            }
-        }
-    }
+  createRecipeCard(recipe) {
+    const card = document.createElement('div');
+    card.className = `recipe-card ${recipe.category.replace(' ', '-')}`;
+    card.innerHTML = `
+      <div class="difficulty-stars">${recipe.difficulty}</div>
+      <div class="victory-points">🏆${recipe.points}</div>
+      <div class="category-icon">${this.getCategoryEmoji(recipe.category)}</div>
+      <div class="recipe-name">${recipe.name}</div>
+      <div class="dice-combination">${recipe.combination}</div>
+    `;
+    return card;
+  }
 
-    endGame() {
-        let winner = null;
-        let highestScore = -1;
-        this.players.forEach(player => {
-            const { bonusPoints } = this.calculateBonuses(player);
-            const totalScore = player.score + bonusPoints;
-            if (totalScore > highestScore) {
-                winner = player;
-                highestScore = totalScore;
-            }
-        });
-        if (winner) {
-            this.showNotification(`🎉 ${winner.name} ha vinto con 🏆 ${highestScore} punti totali! 🎉`);
-        } else {
-            this.showNotification('Pareggio! Nessun vincitore.');
-        }
-    }
-
-    restartGame() {
-        this.currentRound = 1;
-        this.deck = [...this.recipes];
-        this.shuffleDeck();
-        this.initializePlayers();
-        this.setupMarket();
-        this.drawRoundCard();
-        this.renderGame();
-	document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
-        document.getElementById('welcomeScreen').style.display = 'block';
-        document.getElementById('gameScreen').style.display = 'none';
-    }
-
-    createRecipeCard(recipe) {
-        const card = document.createElement('div');
-        card.className = `recipe-card ${recipe.category.replace(' ', '-')}`;
-        card.innerHTML = `
-            <div class="difficulty-stars">${recipe.difficulty}</div>
-            <div class="victory-points">🏆${recipe.points}</div>
-            <div class="category-icon">${this.getCategoryEmoji(recipe.category)}</div>
-            <div class="recipe-name">${recipe.name}</div>
-            <div class="dice-combination">${recipe.combination}</div>
-        `;
-        return card;
-    }
-
-    getCategoryEmoji(category) {
-        const emojis = {
-            'Appetizer': '🥟',
-            'Street Food': '🌮',
-            'Primo': '🍝',
-            'Secondo': '🍖',
-            'Dessert': '🍰',
-            'Holiday Recipe': '🎄'
-        };
-        return emojis[category] || '🍽️';
-    }
+  getCategoryEmoji(category) {
+    const emojis = {
+      'Appetizer': '🥟',
+      'Street Food': '🌮',
+      'Primo': '🍝',
+      'Secondo': '🍖',
+      'Dessert': '🍰',
+      'Holiday Recipe': '🎄'
+    };
+    return emojis[category] || '🍽️';
+  }
 }
 
 const game = new Game();

@@ -79,7 +79,7 @@ class Game {
         this.recipesLoaded = false;
         this.roundCardsLoaded = false;
         this.checkFilesLoaded();
-      } else if (csvSource === 'github') {
+      } else if (csvSource === 'official') {
         localCsvUpload.style.display = 'none';
         this.loadGitHubCSV();
       }

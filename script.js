@@ -135,6 +135,7 @@ class Game {
 
     async loadCSVFromURL(url, type) {
         try {
+            console.log('Inizio del caricamento del file ' + type);
             const response = await fetch(url);
             if (!response.ok) throw new Error("Errore nel download del file " + type);
 

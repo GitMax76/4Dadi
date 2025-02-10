@@ -1,15 +1,15 @@
 class Game {
     constructor() {
-        this.recipes =;
-        this.players =;
-        this.market =;
+        this.recipes =[];
+        this.players =[];
+        this.market =[];
         this.currentRound = 1;
-        this.deck =;
+        this.deck =[];
         this.playerCount = 2;
         this.totalRounds = 3; // Valore predefinito
         this.activePlayer = 0;
         this.bellSound = document.getElementById('bellSound');
-        this.roundCards =;
+        this.roundCards =[];
         this.currentRoundCard = null;
         this.recipesLoaded = false; // Aggiunta la variabile per il caricamento delle ricette
         this.roundCardsLoaded = false; // Aggiunta la variabile per il caricamento delle carte round

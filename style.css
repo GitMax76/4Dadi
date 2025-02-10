@@ -1,278 +1,272 @@
-:root {
-            --appetizer-color: #90EE90;
-            --street-food-color: #FFA07A;
-            --first-course-color: #FFD700;
-            --second-course-color: #DEB887;
-            --dessert-color: #4169E1;
-            --holiday-color: #DC143C;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f0f0f0;
-            min-height: 100vh;
-        }
-        .welcome-screen {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .game-screen {
-            display: none;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .market-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .player-areas {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .player-area {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .recipe-card {
-            position: relative;
-            width: 180px;
-            height: 250px;
-            border-radius: 10px;
-            padding: 15px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .recipe-card:hover {
-            transform: translateY(-5px);
-        }
-        .recipe-card.Appetizer { border: 3px solid var(--appetizer-color); }
-        .recipe-card.Street-Food { border: 3px solid var(--street-food-color); }
-        .recipe-card.Primo { border: 3px solid var(--first-course-color); }
-        .recipe-card.Secondo { border: 3px solid var(--second-course-color); }
-        .recipe-card.Dessert { border: 3px solid var(--dessert-color); }
-        .recipe-card.Holiday-Recipe { border: 3px solid var(--holiday-color); }
-        .dice-area {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            justify-content: center;
-        }
-        .die {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .die.red { background-color: #FF4136; }
-        .die.white { background-color: #DDDDDD; color: #333; }
-        .die.yellow { background-color: #FFDC00; color: #333; }
-        .die.green { background-color: #2ECC40; }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-        .completed-recipes-category {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .completed-recipes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .completed-card {
-            transform: scale(0.8);
-            opacity: 0.8;
-        }
-        .bell-button {
-            background: #ff9800;
-            font-size: 24px;
-            padding: 15px 30px;
-            margin: 20px 0;
-        }
-        .category-icon {
-            font-size: 40px;
-            margin: 14px 0;
-        }
-        .difficulty-stars {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        .victory-points {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-weight: bold;
-        }
-        .dice-combination {
-            margin: 10px 0;
-            font-size: 20px;
-        }
-        .player-score {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #4CAF50;
-        }
-        #csvFileInput, #roundCsvFileInput {
-            display: none;
-        }
-        .file-upload-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #2196F3;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        .file-upload-label:hover {
-            background: #1976D2;
-        }
-        .player-selector {
-            margin: 20px 0;
-        }
-        select {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            display: none;
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-        .round-indicator {
-            text-align: center;
-            font-size: 32px; /* Aumenta la dimensione del testo */
-            font-weight: bold; /* Rendi il testo in grassetto */
-            margin: 20px 0;
-            color: #333;
-            background-color: #FFD700; /* Aggiungi uno sfondo colorato */
-            padding: 10px; /* Aggiungi padding per rendere il testo più leggibile */
-            border-radius: 10px; /* Aggiungi bordi arrotondati */
-        }
-        .round-label {
-		    background-color: white; /* Aggiungi uno sfondo bianco */
-            padding: 5px 10px; /* Aggiungi padding per creare il rettangolo */
-            border-radius: 5px; /* Aggiungi bordi arrotondati */
-            /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
-            -webkit-text-stroke: 1px black;
-        }
-        @keyframes ring {
-            0% { transform: rotate(0); }
-            1% { transform: rotate(30deg); }
-            3% { transform: rotate(-28deg); }
-            5% { transform: rotate(34deg); }
-            7% { transform: rotate(-32deg); }
-            9% { transform: rotate(30deg); }
-            11% { transform: rotate(-28deg); }
-            13% { transform: rotate(26deg); }
-            15% { transform: rotate(-24deg); }
-            17% { transform: rotate(22deg); }
-            19% { transform: rotate(-20deg); }
-            21% { transform: rotate(18deg); }
-            23% { transform: rotate(-16deg); }
-            25% { transform: rotate(14deg); }
-            27% { transform: rotate(-12deg); }
-            29% { transform: rotate(10deg); }
-            31% { transform: rotate(-8deg); }
-            33% { transform: rotate(6deg); }
-            35% { transform: rotate(-4deg); }
-            37% { transform: rotate(2deg); }
-            39% { transform: rotate(-1deg); }
-            41% { transform: rotate(1deg); }
-            43% { transform: rotate(0); }
-        }
-        .bell-button.ringing {
-            animation: ring 0.4s ease;
-        }
-        .round-card-container {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin: 20px 0;
-        }
-        .round-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 300px; /* Aumenta la larghezza della carta */
-            height: 150px; /* Aumenta l'altezza della carta */
-            border: 2px solid #333;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            transition: opacity 0.5s;
-        }
-        .round-card-icon {
-            font-size: 48px; /* Aumenta la dimensione dell'icona */
-            margin-bottom: 20px;
-        }
-        .round-card-name {
-            font-size: 16px; /* Riduci la dimensione del testo del nome */
-            font-weight: bold;
-        }
-        .round-card-description {
-            font-size: 12px; /* Riduci la dimensione del testo della descrizione */
-            text-align: center;
-        }
-        .round-card.blurred {
-            opacity: 0.5; /* Offusca la carta */
-        }
+--appetizer-color: #90EE90;
+    --street-food-color: #FFA07A;
+    --first-course-color: #FFD700;
+    --second-course-color: #DEB887;
+    --dessert-color: #4169E1;
+    --holiday-color: #DC143C;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f0f0f0;
+    min-height: 100vh;
+}.welcome-screen {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}.game-screen {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+}.market-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}.player-areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}.player-area {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}.recipe-card {
+    position: relative;
+    width: 180px;
+    height: 250px;
+    border-radius: 10px;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}.recipe-card:hover {
+    transform: translateY(-5px);
+}.recipe-card.Appetizer { border: 3px solid var(--appetizer-color); }.recipe-card.Street-Food { border: 3px solid var(--street-food-color); }.recipe-card.Primo { border: 3px solid var(--first-course-color); }.recipe-card.Secondo { border: 3px solid var(--second-course-color); }.recipe-card.Dessert { border: 3px solid var(--dessert-color); }.recipe-card.Holiday-Recipe { border: 3px solid var(--holiday-color); }.dice-area {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}.die {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}.die.red { background-color: #FF4136; }.die.white { background-color: #DDDDDD; color: #333; }.die.yellow { background-color: #FFDC00; color: #333; }.die.green { background-color: #2ECC40; }
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+button:hover {
+    background: #45a049;
+}
+button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}.completed-recipes-category {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}.completed-recipes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}.completed-card {
+    transform: scale(0.8);
+    opacity: 0.8;
+}.bell-button {
+    background: #ff9800;
+    font-size: 24px;
+    padding: 15px 30px;
+    margin: 20px 0;
+}.category-icon {
+    font-size: 40px;
+    margin: 14px 0;
+}.difficulty-stars {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}.victory-points {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: bold;
+}.dice-combination {
+    margin: 10px 0;
+    font-size: 20px;
+}.player-score {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #4CAF50;
+}
+#csvFileInput, #roundCsvFileInput {
+    display: none;
+}.file-upload-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #2196F3;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+}.file-upload-label:hover {
+    background: #1976D2;
+}.player-selector {
+    margin: 20px 0;
+}
+select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    display: none;
+    animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}.round-indicator {
+    text-align: center;
+    font-size: 32px; /* Aumenta la dimensione del testo */
+    font-weight: bold; /* Rendi il testo in grassetto */
+    margin: 20px 0;
+    color: #333;
+    background-color: #FFD700; /* Aggiungi uno sfondo colorato */
+    padding: 10px; /* Aggiungi padding per rendere il testo più leggibile */
+    border-radius: 10px; /* Aggiungi bordi arrotondati */
+}.round-label {
+    background-color: white; /* Aggiungi uno sfondo bianco */
+    padding: 5px 10px; /* Aggiungi padding per creare il rettangolo */
+    border-radius: 5px; /* Aggiungi bordi arrotondati */
+    /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
+    -webkit-text-stroke: 1px black;
+}
+@keyframes ring {
+    0% { transform: rotate(0); }
+    1% { transform: rotate(30deg); }
+    3% { transform: rotate(-28deg); }
+    5% { transform: rotate(34deg); }
+    7% { transform: rotate(-32deg); }
+    9% { transform: rotate(30deg); }
+    11% { transform: rotate(-28deg); }
+    13% { transform: rotate(26deg); }
+    15% { transform: rotate(-24deg); }
+    17% { transform: rotate(22deg); }
+    19% { transform: rotate(-20deg); }
+    21% { transform: rotate(18deg); }
+    23% { transform: rotate(-16deg); }
+    25% { transform: rotate(14deg); }
+    27% { transform: rotate(-12deg); }
+    29% { transform: rotate(10deg); }
+    31% { transform: rotate(-8deg); }
+    33% { transform: rotate(6deg); }
+    35% { transform: rotate(-4deg); }
+    37% { transform: rotate(2deg); }
+    39% { transform: rotate(-1deg); }
+    41% { transform: rotate(1deg); }
+    43% { transform: rotate(0); }
+}.bell-button.ringing {
+    animation: ring 0.4s ease;
+}.round-card-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 20px 0;
+}.round-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px; /* Aumenta la larghezza della carta */
+    height: 150px; /* Aumenta l'altezza della carta */
+    border: 2px solid #333;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: opacity 0.5s;
+}.round-card-icon {
+    font-size: 48px; /* Aumenta la dimensione dell'icona */
+    margin-bottom: 20px;
+}.round-card-name {
+    font-size: 16px; /* Riduci la dimensione del testo del nome */
+    font-weight: bold;
+}.round-card-description {
+    font-size: 12px; /* Riduci la dimensione del testo della descrizione */
+    text-align: center;
+}.round-card.blurred {
+    opacity: 0.5; /* Offusca la carta */
+}.highlighted-button {
+    background: #4CAF50;  /* Stesso colore degli altri bottoni */
+    color: white;
+    border: 2px solid #388E3C;  /* Bordo più marcato */
+    padding: 10px 20px;  /* Stesso padding degli altri bottoni */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 22px;
+    margin: 10px auto;  /* Margine per separarlo dagli altri elementi */
+    transition: background 0.2s;
+    display: block;  /* Per metterlo su una riga separata */
+    max-width: 400px;  /* Limita la larghezza */
+    /*background: #FF5722; /* Colore di sfondo più evidente */
+    /*color: white;
+    /*border: none;
+    /*padding: 15px 25px; /* Aumenta il padding */
+    /*border-radius: 5px;
+    /*cursor: pointer;
+    /*font-size: 18px; /* Aumenta la dimensione del testo */
+    /*transition: background 0.2s;
+}.highlighted-button:hover {
+    background: #E64A19; /* Colore di sfondo al passaggio del mouse */
+}
+
+#downloadRulesBtn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+#downloadRulesBtn:hover {
+    background: #45a049;
+}

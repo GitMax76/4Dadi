@@ -1,18 +1,18 @@
 class Game {
     constructor() {
-        this.recipes =[];
-        this.players =[];
-        this.market =[];
+        this.recipes = [];
+        this.players = [];
+        this.market = [];
         this.currentRound = 1;
-        this.deck =[];
+        this.deck = [];
         this.playerCount = 2;
-        this.totalRounds = 3; // Valore predefinito
+        this.totalRounds = 3;
         this.activePlayer = 0;
         this.bellSound = document.getElementById('bellSound');
-        this.roundCards =[];
+        this.roundCards = [];
         this.currentRoundCard = null;
-        this.recipesLoaded = false; // Aggiunta la variabile per il caricamento delle ricette
-        this.roundCardsLoaded = false; // Aggiunta la variabile per il caricamento delle carte round
+        this.recipesLoaded = false;
+        this.roundCardsLoaded = false;
         this.setupEventListeners();
     }
 
@@ -34,7 +34,7 @@ class Game {
             const bonus = Math.floor(count / 3) * points;
             if (bonus > 0) {
                 bonusPoints += bonus;
-                bonusDetails += ` +<span class="math-inline">\{emoji\}</span>{bonus}`;
+                bonusDetails += ` +${emoji}${bonus}`;
             }
         };
         addBonus(categoryCounts['Appetizer'], 5, '🥟');
@@ -51,53 +51,51 @@ class Game {
         const startBtn = document.getElementById('startGameBtn');
         const roundCsvInput = document.getElementById('roundCsvFileInput');
         csvInput.addEventListener('change', (event) => {
-            const file = event.target.files;
+            const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
                         this.recipes = this.parseCSV(e.target.result);
                         if (this.recipes.length > 0) {
-                            this.recipesLoaded = true; // Aggiorna la variabile
+                            this.recipesLoaded = true;
                             this.showNotification('Ricette caricate con successo!');
-                            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+                            this.checkFilesLoaded();
                         } else {
                             throw new Error('Nessuna ricetta trovata nel file CSV');
                         }
                     } catch (error) {
                         this.showNotification('Errore nel caricamento del file: ' + error.message);
-                        this.recipesLoaded = false; // Aggiorna la variabile
-                        this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+                        this.recipesLoaded = false;
+                        this.checkFilesLoaded();
                     }
                 };
                 reader.readAsText(file);
             }
         });
-
         roundCsvInput.addEventListener('change', (event) => {
-            const file = event.target.files;
+            const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
                         this.roundCards = this.parseRoundCSV(e.target.result);
                         if (this.roundCards.length > 0) {
-                            this.roundCardsLoaded = true; // Aggiorna la variabile
+                            this.roundCardsLoaded = true;
                             this.showNotification('Carte round caricate con successo!');
-                            this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+                            this.checkFilesLoaded();
                         } else {
                             throw new Error('Nessuna carta trovata nel file CSV');
                         }
                     } catch (error) {
                         this.showNotification('Errore nel caricamento del file: ' + error.message);
-                        this.roundCardsLoaded = false; // Aggiorna la variabile
-                        this.checkFilesLoaded(); // Controlla se entrambi i file sono caricati
+                        this.roundCardsLoaded = false;
+                        this.checkFilesLoaded();
                     }
                 };
                 reader.readAsText(file);
             }
         });
-
         document.getElementById('loadOfficialCSV').addEventListener('click', async () => {
             try {
                 await this.loadCSVFromURL("https://raw.githubusercontent.com/GitMax76/4Dadi/main/recipes.csv", 'recipes');
@@ -107,11 +105,9 @@ class Game {
                 this.showNotification("Errore nel caricamento dei file ufficiali: " + error.message);
             }
         });
-
         startBtn.addEventListener('click', () => this.startGame());
         document.getElementById('kitchenBell').addEventListener('click', () => this.handleBellRing());
     }
-
     checkFilesLoaded() {
         const startBtn = document.getElementById('startGameBtn');
         if (this.recipesLoaded && this.roundCardsLoaded) {
@@ -135,10 +131,8 @@ class Game {
 
     async loadCSVFromURL(url, type) {
         try {
-            console.log('Inizio del caricamento del file ' + type);
             const response = await fetch(url);
             if (!response.ok) throw new Error("Errore nel download del file " + type);
-
             const csvText = await response.text();
             if (type === 'recipes') {
                 this.recipes = this.parseCSV(csvText);
@@ -157,12 +151,12 @@ class Game {
 
     parseCSV(csvText) {
         const lines = csvText.split('\n');
-        const recipes =;
+        const recipes = [];
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (line) {
                 const [name, difficulty, category, points, combination] = line.split(',');
-                if (!name ||!difficulty ||!category ||!points ||!combination) {
+                if (!name || !difficulty || !category || !points || !combination) {
                     throw new Error('Formato CSV non valido alla riga ' + i);
                 }
                 recipes.push({
@@ -179,12 +173,12 @@ class Game {
 
     parseRoundCSV(csvText) {
         const lines = csvText.split('\n');
-        const roundCards =;
+        const roundCards = [];
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (line) {
                 const [Nome, Icona, Descrizione] = line.split(',');
-                if (!Nome ||!Icona ||!Descrizione) {
+                if (!Nome || !Icona || !Descrizione) {
                     throw new Error('Formato CSV non valido alla riga ' + i);
                 }
                 roundCards.push({
@@ -208,7 +202,7 @@ class Game {
         this.setupMarket();
         this.drawRoundCard();
         this.renderGame();
-        document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
+        document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
     }
 
     shuffleDeck() {
@@ -219,13 +213,13 @@ class Game {
     }
 
     initializePlayers() {
-        this.players =;
+        this.players = [];
         for (let i = 0; i < this.playerCount; i++) {
             this.players.push({
                 id: i,
                 name: `Giocatore ${i + 1}`,
                 score: 0,
-                completedRecipes:,
+                completedRecipes: [],
                 dice: {
                     red: 1,
                     white: 1,
@@ -256,7 +250,7 @@ class Game {
         this.renderMarket();
         this.renderPlayerAreas();
         this.renderRoundCard();
-        document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
+        document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
     }
 
     renderMarket() {
@@ -301,8 +295,8 @@ class Game {
         if (this.currentRoundCard) {
             roundCardContainer.innerHTML = `
                 <div class="round-card">
-                    <div class="round-card-icon"><span class="math-inline">\{this\.currentRoundCard\.Icona\}</div\>
-<div class\="round\-card\-name"\></span>{this.currentRoundCard.Nome}</div>
+                    <div class="round-card-icon">${this.currentRoundCard.Icona}</div>
+                    <div class="round-card-name">${this.currentRoundCard.Nome}</div>
                     <div class="round-card-description">${this.currentRoundCard.Descrizione}</div>
                 </div>
             `;
@@ -332,14 +326,14 @@ class Game {
             });
             playerArea.innerHTML = `
                 <h2>${player.name}</h2>
-                <div class="player-score">🏆 <span class="math-inline">\{player\.score\}</span>{bonusDetails} = <span class="math-inline">\{player\.score \+ bonusPoints\}</div\>
-<div class\="dice\-area"\>
-<div class\="die red"\></span>{player.dice.red}</div>
-                    <div class="die white"><span class="math-inline">\{player\.dice\.white\}</div\>
-<div class\="die yellow"\></span>{player.dice.yellow}</div>
-                    <div class="die green"><span class="math-inline">\{player\.dice\.green\}</div\>
-</div\>
-<button class\="roll\-dice\-btn" onclick\="game\.rollDice\(</span>{player.id})">Lancia i Dadi</button>
+                <div class="player-score">🏆 ${player.score}${bonusDetails} = ${player.score + bonusPoints}</div>
+                <div class="dice-area">
+                    <div class="die red">${player.dice.red}</div>
+                    <div class="die white">${player.dice.white}</div>
+                    <div class="die yellow">${player.dice.yellow}</div>
+                    <div class="die green">${player.dice.green}</div>
+                </div>
+                <button class="roll-dice-btn" onclick="game.rollDice(${player.id})">Lancia i Dadi</button>
                 ${completedRecipesHTML}
             `;
             playerAreas.appendChild(playerArea);
@@ -375,10 +369,10 @@ class Game {
             if (this.currentRound < this.totalRounds) {
                 this.showNotification(`Fine del Round ${this.currentRound}!`, 3000, () => {
                     this.currentRound++;
-                    this.drawRoundCard(); // Pesca una nuova carta round
-                    this.setupMarket(); // Avvia il prossimo round
+                    this.drawRoundCard();
+                    this.setupMarket();
                     this.renderGame();
-                    document.getElementById('roundNumber').textContent = `<span class="math-inline">\{this\.currentRound\}/</span>{this.totalRounds}`;
+                    document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
                 });
             } else {
                 this.endGame();
@@ -427,9 +421,7 @@ class Game {
         this.shuffleDeck();
         this.initializePlayers();
         this.setupMarket();
-        this.drawRoundCard(); // Pesca una nuova carta round per la nuova partita
         this.renderGame();
-        document.getElementById('roundNumber').textContent = `${this.currentRound}/${this.totalRounds}`;
     }
 
     createRecipeCard(recipe) {

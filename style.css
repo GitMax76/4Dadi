@@ -1,12 +1,15 @@
---appetizer-color: #90EE90;
+:root {
+    --appetizer-color: #90EE90;
     --street-food-color: #FFA07A;
     --first-course-color: #FFD700;
     --second-course-color: #DEB887;
     --dessert-color: #4169E1;
     --holiday-color: #DC143C;
 }
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Roboto", serif;
+    font-optical-sizing: auto;
     margin: 0;
     padding: 20px;
     background: #f0f0f0;
@@ -54,6 +57,7 @@ body {
     align-items: center;
     cursor: pointer;
     transition: transform 0.2s;
+    justify-content: space-around;
 }.recipe-card:hover {
     transform: translateY(-5px);
 }.recipe-card.Appetizer { border: 3px solid var(--appetizer-color); }.recipe-card.Street-Food { border: 3px solid var(--street-food-color); }.recipe-card.Primo { border: 3px solid var(--first-course-color); }.recipe-card.Secondo { border: 3px solid var(--second-course-color); }.recipe-card.Dessert { border: 3px solid var(--dessert-color); }.recipe-card.Holiday-Recipe { border: 3px solid var(--holiday-color); }.dice-area {
